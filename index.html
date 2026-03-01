@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>로또 번호 추천</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.container {
+    background: #fff;
+    width: 90%;
+    max-width: 500px;
+    padding: 30px;
+    border-radius: 18px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+h1 {
+    text-align: center;
+    margin-bottom: 10px;
+}
+p {
+    text-align: center;
+    color: #555;
+}
+button {
+    width: 100%;
+    margin-top: 20px;
+    padding: 15px;
+    font-size: 17px;
+    background: #2ecc71;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+}
+button:active {
+    transform: scale(0.97);
+}
+
+.set {
+    margin-top: 25px;
+    padding-top: 15px;
+    border-top: 1px solid #ddd;
+}
+.set-title {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+/* 🎯 로또 공 */
+.ball {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    margin: 4px;
+    border-radius: 50%;
+    font-weight: bold;
+    color: white;
+    font-size: 16px;
+    animation: pop 0.35s ease;
+}
+.bonus {
+    border: 3px solid #000;
+}
+
+@keyframes pop {
+    0% { transform: scale(0); }
+    70% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+/* 색상 구간 */
+.n1 { background: #f1c40f; } /* 1~10 */
+.n2 { background: #3498db; } /* 11~20 */
+.n3 { background: #e74c3c; } /* 21~30 */
+.n4 { background: #7f8c8d; } /* 31~40 */
+.n5 { background: #2ecc71; } /* 41~45 */
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h1>🎰 로또 번호 추천</h1>
+    <p>버튼을 눌러 행운의 번호를 확인하세요</p>
+
+    <button onclick="generateAll()">번호 추천 받기</button>
+
+    <div id="result"></div>
+</div>
+
+<script>
+function generateAll() {
+    const result = document.getElementById("result");
+    result.innerHTML = "";
+
+    for (let i = 1; i <= 5; i++) {
+        const set = new Set();
+        while (set.size < 6) {
+            set.add(Math.floor(Math.random() * 45) + 1);
+        }
+
+        const arr = [...set].sort((a, b) => a - b);
+        const main = arr.slice(0, 5);
+        const bonus = arr[5];
+
+        const setDiv = document.createElement("div");
+        setDiv.className = "set";
+
+        const title = document.createElement("div");
+        title.className = "set-title";
+        title.textContent = `세트 ${i}`;
+        setDiv.appendChild(title);
+
+        main.forEach(num => setDiv.appendChild(createBall(num, false)));
+        setDiv.appendChild(createBall(bonus, true));
+
+        result.appendChild(setDiv);
+    }
+}
+
+function createBall(num, isBonus) {
+    const span = document.createElement("span");
+    span.className = "ball " + colorClass(num);
+    if (isBonus) span.classList.add("bonus");
+    span.textContent = num;
+    return span;
+}
+
+function colorClass(num) {
+    if (num <= 10) return "n1";
+    if (num <= 20) return "n2";
+    if (num <= 30) return "n3";
+    if (num <= 40) return "n4";
+    return "n5";
+}
+</script>
+
+</body>
+</html>
