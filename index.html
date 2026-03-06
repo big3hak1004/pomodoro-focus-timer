@@ -1,24 +1,90 @@
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8">
-<title>로또 번호 추천</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="집중력 향상을 위한 최고의 뽀모도로 타이머. 업무와 휴식 시간을 관리하여 생산성을 높여보세요.">
+    <meta name="keywords" content="뽀모도로, 포모도로, 집중력, 생산성, 타이머, pomodoro, focus, timer">
+    <meta name="google-adsense-account" content="ca-pub-6842027352714531">
+    <title>Focus Timer - 당신의 생산성 파트너</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6842027352714531"
+     crossorigin="anonymous"></script>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-W5EHQGQBQC"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-W5EHQGQBQC');
+    </script>
+    <script type="text/javascript">
+        (function(c,l,a,r,i,t,y){
+            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+        })(window, document, "clarity", "script", "vqw0cu2vtl");
+    </script>
 </head>
-
 <body>
+    <header class="site-header">
+        <div class="container">
+            <h1 class="logo"><a href="index.html">Focus Timer</a></h1>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="index.html">홈</a></li>
+                    <li><a href="about.html">소개</a></li>
+                    <li><a href="contact.html">문의하기</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
 
-<div class="container">
-    <h1>🎰 로또 번호 추천</h1>
-    <p>버튼을 눌러 행운의 번호를 확인하세요</p>
+    <main class="container">
+        <section class="hero">
+            <h2>최고의 집중력, 뽀모도로 타이머와 함께</h2>
+            <p>Focus Timer는 당신의 업무와 학습 효율을 극대화하기 위해 설계되었습니다.<br>뽀모도로 기법을 통해 짧은 집중과 휴식을 반복하며, 지치지 않고 최고의 성과를 만들어보세요.</p>
+        </section>
 
-    <button onclick="generateAll()">번호 추천 받기</button>
+        <focus-timer></focus-timer>
 
-    <div id="result"></div>
-</div>
+        <section class="content-section">
+            <h3>뽀모도로 기법이란?</h3>
+            <p>뽀모도로 기법은 1980년대 후반 프란체스코 시릴로가 개발한 시간 관리 방법론입니다. 타이머를 이용해 25분 집중해서 일하고 5분간 휴식하는 방식을 여러 번 반복하는 것이 핵심입니다. 이 기법은 다음과 같은 장점이 있습니다.</p>
+            <ul>
+                <li><strong>집중력 향상:</strong> 짧은 시간 동안 하나의 작업에만 몰입하여 방해 요소를 차단합니다.</li>
+                <li><strong>번아웃 방지:</strong> 주기적인 휴식은 뇌가 재충전할 시간을 주어 피로를 줄여줍니다.</li>
+                <li><strong>시간 관리 능력 개선:</strong> 작업을 시간 단위로 계획하고 실행하면서 시간을 더 효율적으로 사용하게 됩니다.</li>
+            </ul>
+        </section>
+        
+        <section class="content-section">
+            <h3>Focus Timer 사용법</h3>
+            <ol>
+                <li><strong>업무 시간 설정:</strong> 집중할 시간을 분 단위로 입력합니다. (기본 25분)</li>
+                <li><strong>휴식 시간 설정:</strong> 짧은 휴식 시간을 분 단위로 입력합니다. (기본 5분)</li>
+                <li><strong>시작 버튼 클릭:</strong> 'Start' 버튼을 눌러 타이머를 시작합니다.</li>
+                <li><strong>집중과 휴식:</strong> 타이머에 맞춰 업무에 집중하고, 휴식 시간이 되면 잠시 쉬어갑니다. 모든 세션이 끝나면 알림이 울립니다.</li>
+            </ol>
+        </section>
+    </main>
 
-<script src="main.js"></script>
+    <footer class="site-footer">
+        <div class="container">
+            <p>&copy; 2024 Focus Timer. All Rights Reserved.</p>
+            <nav class="footer-nav">
+                <ul>
+                    <li><a href="privacy.html">개인정보처리방침</a></li>
+                </ul>
+            </nav>
+        </div>
+    </footer>
 
+    <script src="main.js"></script>
 </body>
 </html>
