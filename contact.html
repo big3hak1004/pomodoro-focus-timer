@@ -1,31 +1,14 @@
 
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Focus Timer 팀에 문의사항이나 제안이 있으신가요? 언제든지 연락주세요.">
-    <title>Contact - Focus Timer</title>
+    <title>Contact Us - Focus Timer</title>
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-W5EHQGQBQC"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-
-      gtag('config', 'G-W5EHQGQBQC');
-    </script>
-    <script type="text/javascript">
-        (function(c,l,a,r,i,t,y){
-            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-        })(window, document, "clarity", "script", "vqw0cu2vtl");
-    </script>
 </head>
 <body>
     <header class="site-header">
@@ -33,56 +16,45 @@
             <h1 class="logo"><a href="index.html">Focus Timer</a></h1>
             <nav class="main-nav">
                 <ul>
-                    <li><a href="index.html">홈</a></li>
-                    <li><a href="about.html">소개</a></li>
-                    <li><a href="contact.html">문의하기</a></li>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="contact.html">Contact</a></li>
                 </ul>
             </nav>
+            <button class="theme-toggle-button" aria-label="Toggle Theme">🌙</button>
         </div>
     </header>
 
     <main class="container">
-        <section class="content-section page-title">
-            <h2>문의하기</h2>
-            <p>Focus Timer에 대한 질문, 제안, 또는 파트너십 문의가 있으시면 아래 양식을 통해 메시지를 보내주세요. 최대한 빠른 시일 내에 답변드리겠습니다.</p>
+        <section class="content-section">
+            <h3>Contact & Feedback</h3>
+            <p>Thank you for using Focus Timer. We welcome any feedback, including questions, bug reports, or feature suggestions.</p>
+            <p>Please contact us at the email address below, and we will review and respond as quickly as possible.</p>
+            <p style="text-align: center; font-size: 1.2rem; margin-top: 30px;">
+                <strong>Email:</strong> <a href="mailto:big3hak@gmail.com">big3hak@gmail.com</a>
+            </p>
         </section>
 
-        <form id="contact-form" class="contact-form">
-            <div class="form-group">
-                <label for="name">이름</label>
-                <input type="text" id="name" name="name" required>
-            </div>
-            <div class="form-group">
-                <label for="email">이메일</label>
-                <input type="email" id="email" name="email" required>
-            </div>
-            <div class="form-group">
-                <label for="message">메시지</label>
-                <textarea id="message" name="message" rows="6" required></textarea>
-            </div>
-            <button type="submit" class="btn-submit">메시지 보내기</button>
-        </form>
+        <section class="content-section">
+            <h3>Frequently Asked Questions (FAQ)</h3>
+            <p><strong>Q: I want to change the timer duration.</strong></p>
+            <p>A: You can now adjust the work and break times directly within the timer component. Click the settings icon (⚙️) to open the new settings panel.</p>
+            <br>
+            <p><strong>Q: Do I need to install an app?</strong></p>
+            <p>A: No, Focus Timer is a web-based service and can be used directly in your web browser without any installation.</p>
+        </section>
     </main>
 
-    <footer class="site-header">
+    <footer class="site-footer">
         <div class="container">
             <p>&copy; 2024 Focus Timer. All Rights Reserved.</p>
             <nav class="footer-nav">
                 <ul>
-                    <li><a href="privacy.html">개인정보처리방침</a></li>
+                    <li><a href="privacy.html">Privacy Policy</a></li>
                 </ul>
             </nav>
         </div>
     </footer>
-    
-    <script>
-        // A simple script to handle form submission - for demonstration.
-        // In a real application, this would send data to a server.
-        document.getElementById('contact-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            alert('메시지가 성공적으로 전송되었습니다. 감사합니다!');
-            this.reset();
-        });
-    </script>
+    <script src="main.js"></script>
 </body>
 </html>

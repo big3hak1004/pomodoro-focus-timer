@@ -1,241 +1,270 @@
 
 class FocusTimer extends HTMLElement {
-    constructor() {
-        super();
-        this.attachShadow({ mode: 'open' });
+  constructor() {
+    super();
+    this.attachShadow({ mode: 'open' });
 
-        this.isDarkMode = false;
-        this.isWorkSession = true;
-        this.countdown = null;
+    // Initial state
+    this.timerState = 'paused';
+    this.currentMode = 'work';
+    this.workDuration = (localStorage.getItem('workDuration') || 25) * 60;
+    this.breakDuration = (localStorage.getItem('breakDuration') || 5) * 60;
+    this.timeLeft = this.workDuration;
+    this.timerId = null;
 
-        this.shadowRoot.innerHTML = `
-            <style>
-                :host {
-                    display: block;
-                    text-align: center;
-                    background: var(--component-bg, var(--component-bg-light));
-                    padding: 40px;
-                    border-radius: 15px;
-                    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-                    transition: all 0.3s ease;
-                    width: 90%;
-                    max-width: 500px;
-                }
-                h1 {
-                    color: var(--primary-color, var(--primary-color-light));
-                    font-weight: 700;
-                    font-size: 2.2em;
-                }
-                .input-group {
-                    display: flex;
-                    justify-content: center;
-                    gap: 15px;
-                    margin: 20px 0;
-                }
-                input[type="number"] {
-                    width: 40%;
-                    padding: 15px;
-                    border: 2px solid #ddd;
-                    border-radius: 8px;
-                    font-size: 1.1em;
-                    text-align: center;
-                    transition: border-color 0.3s ease;
-                    background-color: var(--bg-color, var(--bg-color-light));
-                    color: var(--text-color, var(--text-color-light));
-                }
-                input:focus {
-                    outline: none;
-                    border-color: var(--accent-color, var(--accent-color-light));
-                }
-                button {
-                    background-color: var(--primary-color, var(--primary-color-light));
-                    color: white;
-                    border: none;
-                    padding: 15px 30px;
-                    font-size: 1.2em;
-                    border-radius: 8px;
-                    cursor: pointer;
-                    transition: background-color 0.3s ease, transform 0.2s ease;
-                    box-shadow: 0 4px 15px rgba(0, 90, 156, 0.4);
-                }
-                button:hover {
-                    opacity: 0.9;
-                    transform: translateY(-2px);
-                }
-                #timer-display {
-                    font-size: 5em;
-                    font-weight: 700;
-                    color: var(--primary-color, var(--primary-color-light));
-                    margin: 10px 0;
-                }
-                #session-status {
-                    font-size: 1.5em;
-                    color: var(--accent-color, var(--accent-color-dark));
-                    margin-bottom: 20px;
-                }
-                .settings {
-                    margin-top: 20px;
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    gap: 20px;
-                }
-                .settings label {
-                    display: flex;
-                    align-items: center;
-                    gap: 5px;
-                    cursor: pointer;
-                }
-                #theme-toggle {
-                    background: none;
-                    border: none;
-                    font-size: 1.8em;
-                    cursor: pointer;
-                    position: absolute;
-                    top: 20px;
-                    right: 20px;
-                }
-                 #lock-overlay {
-                    position: fixed;
-                    top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 100%;
-                    background: rgba(0, 0, 0, 0.95);
-                    color: white;
-                    display: none;
-                    flex-direction: column;
-                    justify-content: center;
-                    align-items: center;
-                    z-index: 9999;
-                }
-                #motivation-quote {
-                    font-size: 1.8em;
-                    margin-top: 20px;
-                    padding: 0 20px;
-                }
-            </style>
-            <div id="main-container">
-                <button id="theme-toggle">🌙</button>
-                <h1>Pomodoro Focus Timer</h1>
-                <div class="input-group">
-                    <input type="number" id="work-minutes" placeholder="Work (min)" min="1" value="25">
-                    <input type="number" id="rest-minutes" placeholder="Rest (min)" min="1" value="5">
-                </div>
-                <button id="start-btn">Start</button>
-                <div class="settings">
-                    <label><input type="checkbox" id="sound-alert"> Sound Alert</label>
-                    <label><input type="checkbox" id="vibration-alert"> Vibration Alert</label>
-                </div>
-            </div>
-            <div id="lock-overlay">
-                <p id="session-status"></p>
-                <div id="timer-display">00:00</div>
-                <p id="motivation-quote"></p>
-            </div>
-        `;
-
-        this.audio = new Audio('https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg');
-    }
-
-    connectedCallback() {
-        this.workMinutesInput = this.shadowRoot.querySelector('#work-minutes');
-        this.restMinutesInput = this.shadowRoot.querySelector('#rest-minutes');
-        this.startBtn = this.shadowRoot.querySelector('#start-btn');
-        this.timerDisplay = this.shadowRoot.querySelector('#timer-display');
-        this.lockOverlay = this.shadowRoot.querySelector('#lock-overlay');
-        this.motivationQuote = this.shadowRoot.querySelector('#motivation-quote');
-        this.themeToggle = this.shadowRoot.querySelector('#theme-toggle');
-        this.sessionStatus = this.shadowRoot.querySelector('#session-status');
-        
-        this.soundAlertCheckbox = this.shadowRoot.querySelector('#sound-alert');
-        this.vibrationAlertCheckbox = this.shadowRoot.querySelector('#vibration-alert');
-
-        this.quotes = [
-            "The greatest glory in living lies not in never falling, but in rising every time we fall.",
-            "The secret of success is constancy to purpose.",
-            "Today's efforts build the you of tomorrow.",
-            "If you don't give up, you haven't failed.",
-            "The best revenge is massive success."
-        ];
-
-        this.startBtn.addEventListener('click', () => this.startSession());
-        this.themeToggle.addEventListener('click', () => this.toggleTheme());
-    }
-
-    startSession() {
-        clearInterval(this.countdown);
-        
-        const sessionType = this.isWorkSession ? 'Work' : 'Rest';
-        const minutes = this.isWorkSession 
-            ? parseInt(this.workMinutesInput.value, 10)
-            : parseInt(this.restMinutesInput.value, 10);
-
-        if (isNaN(minutes) || minutes <= 0) {
-            alert('Please enter a valid number of minutes.');
-            return;
+    this.shadowRoot.innerHTML = `
+      <style>
+        :host {
+          display: block;
+          text-align: center;
+          background-color: var(--content-bg-color, #fff);
+          padding: 40px;
+          border-radius: 12px;
+          box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+          margin: 30px 0;
+          transition: background-color 0.3s, color 0.3s;
+          position: relative; /* For settings button positioning */
+        }
+        #timer-display {
+          font-family: 'Orbitron', sans-serif;
+          font-size: 6rem;
+          font-weight: 700;
+          color: var(--text-color, #333);
+          margin: 20px 0;
+          transition: color 0.3s;
+        }
+        .mode-label {
+          font-size: 1.2rem;
+          color: var(--content-text-color, #555);
+          margin-bottom: 20px;
+          font-weight: 700;
+          letter-spacing: 1px;
+          transition: color 0.3s;
+        }
+        .timer-controls button {
+          font-size: 1.2rem;
+          padding: 12px 30px;
+          margin: 0 10px;
+          border: none;
+          border-radius: 8px;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          background-color: var(--primary-color, #4CAF50);
+          color: white;
+          box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        .timer-controls button#pause-btn {
+          background-color: #f44336;
+        }
+        .timer-controls button:hover {
+          transform: translateY(-2px);
+          opacity: 0.9;
+        }
+        .timer-controls button:disabled {
+          background-color: #ccc;
+          cursor: not-allowed;
+          box-shadow: none;
         }
 
-        this.lockOverlay.style.display = 'flex';
-        this.sessionStatus.textContent = this.isWorkSession ? '🔥 Work Session' : '🧘‍♀️ Rest Session';
-        this.showRandomQuote();
-        
-        let totalSeconds = minutes * 60;
-        this.updateTimerDisplay(totalSeconds);
-
-        this.countdown = setInterval(() => {
-            totalSeconds--;
-            this.updateTimerDisplay(totalSeconds);
-
-            if (totalSeconds < 0) {
-                this.endSession();
-            }
-        }, 1000);
-    }
-
-    endSession() {
-        clearInterval(this.countdown);
-        this.triggerAlerts();
-        const previousSession = this.isWorkSession ? 'Work' : 'Rest';
-        this.isWorkSession = !this.isWorkSession;
-        
-        setTimeout(() => {
-            alert(`${previousSession} session is over! Starting a ${this.isWorkSession ? 'Work' : 'Rest'} session.`);
-            this.startSession();
-        }, 1000); 
-    }
-
-    triggerAlerts() {
-        if (this.soundAlertCheckbox.checked) {
-            this.audio.play();
+        /* Settings Panel */
+        #settings-btn {
+          position: absolute;
+          top: 20px;
+          right: 20px;
+          background: none;
+          border: none;
+          font-size: 1.8rem;
+          cursor: pointer;
+          color: var(--text-color);
         }
-        if (this.vibrationAlertCheckbox.checked && 'vibrate' in navigator) {
-            navigator.vibrate(200); // 200ms vibration
+        #settings-panel {
+          display: none; /* Hidden by default */
+          position: absolute;
+          top: 60px;
+          right: 20px;
+          background: var(--content-bg-color);
+          padding: 20px;
+          border-radius: 8px;
+          box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+          z-index: 10;
+          text-align: left;
         }
-    }
-
-    updateTimerDisplay(seconds) {
-        if (seconds < 0) return;
-        const mins = Math.floor(seconds / 60).toString().padStart(2, '0');
-        const secs = (seconds % 60).toString().padStart(2, '0');
-        this.timerDisplay.textContent = `${mins}:${secs}`;
-    }
-
-    showRandomQuote() {
-        if (this.isWorkSession) {
-            const randomIndex = Math.floor(Math.random() * this.quotes.length);
-            this.motivationQuote.textContent = this.quotes[randomIndex];
-            this.motivationQuote.style.display = 'block';
-        } else {
-            this.motivationQuote.style.display = 'none';
+        #settings-panel.visible {
+            display: block;
         }
-    }
+        #settings-panel label {
+          display: block;
+          margin-bottom: 8px;
+          color: var(--text-color);
+        }
+        #settings-panel input {
+          width: 60px;
+          padding: 8px;
+          margin-bottom: 15px;
+          border: 1px solid #ccc;
+          border-radius: 4px;
+        }
+        #settings-panel button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+        }
 
-    toggleTheme() {
-        this.isDarkMode = !this.isDarkMode;
-        document.body.classList.toggle('dark-mode');
-        this.themeToggle.textContent = this.isDarkMode ? '☀️' : '🌙';
+      </style>
+      
+      <button id="settings-btn">⚙️</button>
+      <div id="settings-panel">
+          <label for="work-duration">Work (min)</label>
+          <input type="number" id="work-duration" min="1" value="${this.workDuration / 60}">
+          <label for="break-duration">Break (min)</label>
+          <input type="number" id="break-duration" min="1" value="${this.breakDuration / 60}">
+          <button id="save-settings-btn" class="timer-controls button">Save</button>
+      </div>
+
+      <div class="mode-label" id="mode-label">Work Session</div>
+      <div id="timer-display">25:00</div>
+      <div class="timer-controls">
+        <button id="start-btn">Start</button>
+        <button id="pause-btn" disabled>Pause</button>
+        <button id="reset-btn">Reset</button>
+      </div>
+    `;
+  }
+
+  connectedCallback() {
+    // Element references
+    this.display = this.shadowRoot.querySelector('#timer-display');
+    this.modeLabel = this.shadowRoot.querySelector('#mode-label');
+    this.startBtn = this.shadowRoot.querySelector('#start-btn');
+    this.pauseBtn = this.shadowRoot.querySelector('#pause-btn');
+    this.resetBtn = this.shadowRoot.querySelector('#reset-btn');
+    this.settingsBtn = this.shadowRoot.querySelector('#settings-btn');
+    this.settingsPanel = this.shadowRoot.querySelector('#settings-panel');
+    this.workDurationInput = this.shadowRoot.querySelector('#work-duration');
+    this.breakDurationInput = this.shadowRoot.querySelector('#break-duration');
+    this.saveSettingsBtn = this.shadowRoot.querySelector('#save-settings-btn');
+
+    // Event Listeners
+    this.startBtn.addEventListener('click', () => this.startTimer());
+    this.pauseBtn.addEventListener('click', () => this.pauseTimer());
+    this.resetBtn.addEventListener('click', () => this.resetTimer(true));
+    this.settingsBtn.addEventListener('click', () => this.toggleSettingsPanel());
+    this.saveSettingsBtn.addEventListener('click', () => this.saveSettings());
+
+    this.updateDisplay();
+  }
+
+  // --- Timer Logic ---
+
+  updateDisplay() {
+    const minutes = Math.floor(this.timeLeft / 60);
+    const seconds = this.timeLeft % 60;
+    this.display.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+  }
+
+  startTimer() {
+    if (this.timerState === 'paused') {
+      this.timerState = 'running';
+      this.startBtn.disabled = true;
+      this.pauseBtn.disabled = false;
+      
+      this.timerId = setInterval(() => {
+        this.timeLeft--;
+        this.updateDisplay();
+
+        if (this.timeLeft < 0) {
+          this.switchMode();
+        }
+      }, 1000);
     }
+  }
+
+  pauseTimer() {
+    if (this.timerState === 'running') {
+      this.timerState = 'paused';
+      clearInterval(this.timerId);
+      this.startBtn.disabled = false;
+      this.pauseBtn.disabled = true;
+    }
+  }
+
+  resetTimer(resetToWork = false) {
+    this.pauseTimer();
+    if (resetToWork || this.currentMode === 'work') {
+        this.currentMode = 'work';
+        this.timeLeft = this.workDuration;
+        this.modeLabel.textContent = 'Work Session';
+    } else {
+        this.currentMode = 'break';
+        this.timeLeft = this.breakDuration;
+        this.modeLabel.textContent = 'Break Time';
+    }
+    this.updateDisplay();
+  }
+
+  switchMode() {
+      this.pauseTimer();
+      if (this.currentMode === 'work') {
+          this.currentMode = 'break';
+          this.timeLeft = this.breakDuration;
+          this.modeLabel.textContent = 'Break Time';
+          alert('Work session finished. Time for a break!');
+      } else {
+          this.currentMode = 'work';
+          this.timeLeft = this.workDuration;
+          this.modeLabel.textContent = 'Work Session';
+          alert('Break time is over. Time for the next work session!');
+      }
+      this.updateDisplay();
+      this.startTimer();
+  }
+
+  // --- Settings Logic ---
+
+  toggleSettingsPanel() {
+      this.settingsPanel.classList.toggle('visible');
+  }
+
+  saveSettings() {
+      const newWorkDuration = parseInt(this.workDurationInput.value, 10);
+      const newBreakDuration = parseInt(this.breakDurationInput.value, 10);
+
+      if (newWorkDuration > 0 && newBreakDuration > 0) {
+          this.workDuration = newWorkDuration * 60;
+          this.breakDuration = newBreakDuration * 60;
+          
+          localStorage.setItem('workDuration', newWorkDuration);
+          localStorage.setItem('breakDuration', newBreakDuration);
+
+          alert('Settings saved!');
+          this.toggleSettingsPanel(); // Hide panel after saving
+          this.resetTimer(true); // Reset to apply new times
+      } else {
+          alert('Please enter valid numbers for work and break durations.');
+      }
+  }
 }
 
 customElements.define('focus-timer', FocusTimer);
+
+// --- Main Application Logic (outside the component) ---
+document.addEventListener('DOMContentLoaded', () => {
+    const themeToggleButton = document.querySelector('.theme-toggle-button');
+    const htmlElement = document.documentElement;
+
+    // Theme Switcher Logic
+    const applyTheme = (theme) => {
+        htmlElement.setAttribute('data-theme', theme);
+        themeToggleButton.textContent = theme === 'dark' ? '☀️' : '🌙';
+        localStorage.setItem('theme', theme);
+    };
+
+    themeToggleButton.addEventListener('click', () => {
+        const newTheme = htmlElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        applyTheme(newTheme);
+    });
+
+    // Initial Load: Apply saved theme
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    applyTheme(savedTheme);
+});

@@ -1,34 +1,38 @@
+# Blueprint: Focus Timer
 
-# Blueprint: AdSense Optimized Focus Timer
+## 1. Project Overview
 
-## Overview
+Focus Timer is a web application that helps users improve their productivity and concentration using the Pomodoro Technique. It provides a simple and intuitive interface to manage work and break times, helping users stay focused on their goals without burnout.
 
-This project is a web-based Pomodoro focus timer designed to help users improve productivity. The primary goal is to create a high-quality, content-rich website that meets Google AdSense program policies to enable monetization through advertising.
+## 2. Core Features
 
-## Design and Features (Current)
+- **Pomodoro Timer:** A timer based on the Pomodoro Technique, with a default cycle of 25 minutes of work and 5 minutes of break.
+- **In-Component Time Settings:** Users can directly change the duration of work and break sessions via a settings panel integrated within the timer component. Changes are automatically saved to the browser's `localStorage`.
+- **Session Management:** Users can start, pause, and reset the timer. The application automatically switches between work and break modes.
+- **User Notifications:** Alerts the user at the end of each session to guide them to the next action.
+- **Theme Switching:** Provides a dark/light mode theme-switching feature for user's visual comfort.
 
-*   **Core Functionality:** A customizable Pomodoro timer implemented as a Web Component (`<focus-timer>`).
-*   **User Controls:** Inputs for setting work and rest durations, start button, and alert toggles (sound/vibration).
-*   **Dynamic UI:** A "lock screen" overlay appears during a session to maintain focus.
-*   **Visuals:** Includes a dark mode toggle and motivational quotes during work sessions.
-*   **Styling:** Modern CSS for a clean, responsive layout.
+## 3. Design and UI/UX
 
-## **AdSense Optimization Plan (Current Request)**
+- **Minimal and Clean Design:** A clean, minimalistic design with few distractions for an intuitive user experience.
+- **Visual Feedback:** The timer display, button states (enabled/disabled), and a settings icon provide clear visual feedback on the current state.
+- **Responsive Design:** A responsive layout is applied to provide an optimal user experience across various devices, including desktops and mobile phones.
+- **Custom Fonts:** Uses the 'Orbitron' font for the timer display to give it a digital clock look and feel.
 
-To ensure compliance and increase the likelihood of AdSense approval, the following enhancements will be implemented:
+## 4. Technical Implementation
 
-### 1. **Content & Information Architecture**
-*   **Homepage Enrichment:** Add descriptive sections to `index.html` explaining what the Pomodoro Technique is and the benefits of using this timer.
-*   **About Page (`about.html`):** Create a new page to explain the mission and purpose of the website, building trust with users and advertisers.
-*   **Contact Page (`contact.html`):** Ensure the existing contact page is properly linked and integrated into the site structure.
-*   **Privacy Policy Page (`privacy.html`):** Create a dedicated page for the privacy policy, a critical requirement for AdSense.
+- **Web Component (`focus-timer`):** The core timer functionality is encapsulated as a self-contained Web Component, enhancing modularity and reusability.
+- **Shadow DOM:** The component’s styles and scripts are isolated from the main document using the Shadow DOM to prevent conflicts.
+- **Modern JavaScript (ES6+):** The code is written using modern JavaScript syntax, including classes and arrow functions.
+- **CSS Variables:** CSS variables are utilized to efficiently implement the theme-switching functionality.
 
-### 2. **Site Navigation and Structure**
-*   **Consistent Navigation:** Implement a `<header>` with a clear navigation menu on all pages (`index.html`, `about.html`, `contact.html`, `privacy.html`).
-*   **Consistent Footer:** Implement a `<footer>` on all pages containing copyright information and links to the About, Contact, and Privacy Policy pages.
+## 5. Current Plan & Stages
 
-### 3. **Code & Technical Implementation**
-*   **HTML Structure:** Update all relevant HTML files to include the new header, footer, and content sections.
-*   **CSS Styling:** Add styles to `style.css` for the new navigation, footer, and content elements to ensure a professional and consistent look and feel across the entire site.
-*   **Deployment:** Redeploy the updated application to Firebase Hosting.
-
+- **[Complete]** Initial project setup (HTML, CSS, JS).
+- **[Complete]** Implementation of the Pomodoro timer as a Web Component.
+- **[Complete]** Implementation of a dark/light mode theme feature.
+- **[Complete]** Integration of Google AdSense, Analytics, and Microsoft Clarity.
+- **[Complete]** Full translation of the UI to English.
+- **[Complete]** Refactoring of the time settings feature to be integrated directly within the timer component.
+- **[Complete]** Creation of detailed content pages (About, Contact, Privacy).
+- **Next:** Deploy the updated version and gather user feedback for further improvements.
